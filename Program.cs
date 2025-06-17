@@ -1,17 +1,30 @@
+using Microsoft.AspNetCore.Builder;
+using Swashbuckle.AspNetCore.SwaggerUI;
+using WarApi.Repositories;
+using WarApi.Repositories.Interfaces;
+using WarApi.Services;
+using WarApi.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Agregar controladores
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+// Agregar Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Inyección de dependencias
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Middleware de Swagger
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(); // Opcional: (c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "War API v1"));
 }
 
 app.UseHttpsRedirection();
