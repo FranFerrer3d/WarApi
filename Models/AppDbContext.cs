@@ -9,6 +9,7 @@ namespace WarApi.Models
 
         public DbSet<MatchReport> MatchReports { get; set; }
         public DbSet<Player> Players { get; set; }
+        public DbSet<Lista> Listas { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +25,12 @@ namespace WarApi.Models
                 .WithMany()
                 .HasForeignKey(m => m.PlayerBId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Lista>()
+                .HasOne(l => l.Player)
+                .WithMany(p => p.Listas)
+                .HasForeignKey(l => l.PlayerId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

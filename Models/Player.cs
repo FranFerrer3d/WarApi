@@ -13,9 +13,8 @@ namespace WarApi.Models
         public string? Foto { get; set; }
         public string Equipo { get; set; } = string.Empty;
 
-        // Relaciones futuras
-        //public List<Lista>? Listas { get; set; }
-        //public List<Reporte>? Reportes { get; set; }
+        public ICollection<Lista>? Listas { get; set; }
+        public ICollection<MatchReport>? Reportes { get; set; }
 
     }
 }

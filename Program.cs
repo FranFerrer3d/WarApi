@@ -24,8 +24,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IMatchReportRepository, MatchReportRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
-builder.Services.AddScoped<IMatchReportService, MatchReportService>(); 
+builder.Services.AddScoped<IMatchReportService, MatchReportService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<IListaRepository, ListaRepository>();
+builder.Services.AddScoped<IListaService, ListaService>();
 
 
 
