@@ -29,9 +29,13 @@ builder.Services.AddScoped<IPlayerService, PlayerService>();
 
 
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+var rawUrl = builder.Configuration["ConnectionStrings:DefaultConnection"] ??
+             builder.Configuration["DATABASE_URL"];
 
+var connectionString = ConvertDatabaseUrlToConnectionString(rawUrl);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 
 
@@ -59,3 +63,15 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+
+string ConvertDatabaseUrlToConnectionString(string databaseUrl)
+{
+    // Ejemplo: postgres://user:pass@host:port/dbname
+    var uri = new Uri(databaseUrl);
+    var userInfo = uri.UserInfo.Split(':');
+
+    return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};Ssl Mode=Require;Trust Server Certificate=true";
+}
+
