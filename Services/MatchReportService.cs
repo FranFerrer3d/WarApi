@@ -17,7 +17,7 @@ namespace MatchReportNamespace.Services
         public async Task<IEnumerable<MatchReport>> GetAllAsync() =>
             await _repository.GetAllAsync();
 
-        public async Task<MatchReport> GetByIdAsync(Guid id) =>
+        public async Task<MatchReport?> GetByIdAsync(Guid id) =>
             await _repository.GetByIdAsync(id);
 
         public async Task<MatchReport> CreateAsync(MatchReport report)
