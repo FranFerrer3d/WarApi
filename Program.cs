@@ -1,79 +1,67 @@
-using MatchReportNamespace.Repositories;
-using MatchReportNamespace.Services;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Swashbuckle.AspNetCore.SwaggerUI;
 using WarApi.Models;
 using WarApi.Repositories;
 using WarApi.Repositories.Interfaces;
-using WarApi.Services;
-using WarApi.Services.Interfaces;
+using MatchReportNamespace.Repositories;
+using MatchReportNamespace.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Agregar controladores
-builder.Services.AddControllers();
+// Convertir DATABASE_URL a connection string compatible con Npgsql
+string ConvertDatabaseUrlToConnectionString(string? databaseUrl)
+{
+    if (string.IsNullOrWhiteSpace(databaseUrl))
+        throw new ArgumentException("DATABASE_URL is null or empty.");
 
-// Agregar Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+    if (!databaseUrl.StartsWith("postgres://"))
+        throw new ArgumentException("DATABASE_URL must be a valid PostgreSQL URI.");
 
-// Inyección de dependencias
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    var uri = new Uri(databaseUrl);
+    var userInfo = uri.UserInfo.Split(':');
 
-builder.Services.AddScoped<IMatchReportRepository, MatchReportRepository>();
-builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
-builder.Services.AddScoped<IMatchReportService, MatchReportService>(); 
-builder.Services.AddScoped<IPlayerService, PlayerService>();
+    if (userInfo.Length != 2)
+        throw new ArgumentException("DATABASE_URL user info is invalid.");
 
+    if (uri.Port <= 0)
+        throw new ArgumentException("DATABASE_URL must include a valid port.");
 
+    return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};Ssl Mode=Require;Trust Server Certificate=true";
+}
 
-var rawUrl = builder.Configuration["DATABASE_URL"]
-             ?? builder.Configuration.GetConnectionString("DefaultConnection");
-
+// Obtener y convertir la cadena
+var rawUrl = builder.Configuration["DATABASE_URL"];
 var connectionString = ConvertDatabaseUrlToConnectionString(rawUrl);
 
+// Registrar DbContext con la cadena procesada
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+// Inyección de dependencias
+builder.Services.AddScoped<IMatchReportRepository, MatchReportRepository>();
+builder.Services.AddScoped<IMatchReportService, MatchReportService>();
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Middleware de Swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+// Aplicar migraciones automáticamente
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
 }
 
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
-
-
-
-string ConvertDatabaseUrlToConnectionString(string? databaseUrl)
+// Configuración HTTP
+if (app.Environment.IsDevelopment())
 {
-    if (string.IsNullOrWhiteSpace(databaseUrl))
-        throw new ArgumentException("DATABASE_URL is not set");
-
-    var uri = new Uri(databaseUrl);
-    var userInfo = uri.UserInfo.Split(':');
-
-    return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};Ssl Mode=Require;Trust Server Certificate=true";
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
