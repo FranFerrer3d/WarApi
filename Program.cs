@@ -1,4 +1,4 @@
-using MatchReportNamespace.Repositories;
+﻿using MatchReportNamespace.Repositories;
 using MatchReportNamespace.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +18,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Inyecci�n de dependencias
+// Inyección de dependencias
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -52,15 +52,27 @@ if (app.Environment.IsDevelopment())
 
 try
 {
-    using (var scope = app.Services.CreateScope())
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    var pendingMigrations = db.Database.GetPendingMigrations();
+    if (pendingMigrations.Any())
     {
-        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        Console.WriteLine("⚠️  Applying pending EF Core migrations...");
         db.Database.Migrate();
+        Console.WriteLine("✅ Migrations applied successfully.");
+    }
+    else
+    {
+        Console.WriteLine("ℹ️  No pending migrations. Database is up to date.");
     }
 }
-catch (Exception e) { 
-    Console.WriteLine(e.Message);
+catch (Exception ex)
+{
+    Console.WriteLine("❌ Error applying migrations:");
+    Console.WriteLine(ex.ToString());
 }
+
 
 
 app.UseHttpsRedirection();
