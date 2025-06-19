@@ -30,7 +30,7 @@ builder.Services.AddScoped<IPlayerService, PlayerService>();
 
 
 var rawUrl = builder.Configuration["ConnectionStrings:DefaultConnection"] ?? 
-             builder.Configuration["DATABASE_URL"];
+             builder.Configuration["ConnectionStrings:DATABASE_URL"];
 
 var connectionString = rawUrl;
 
