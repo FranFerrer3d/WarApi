@@ -1,5 +1,9 @@
+using MatchReportNamespace.Repositories;
+using MatchReportNamespace.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using WarApi.Models;
 using WarApi.Repositories;
 using WarApi.Repositories.Interfaces;
 using WarApi.Services;
@@ -15,8 +19,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Inyección de dependencias
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IMatchReportRepository, MatchReportRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<IMatchReportService, MatchReportService>(); 
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+
+
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
 var app = builder.Build();
 
@@ -24,7 +40,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(); // Opcional: (c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "War API v1"));
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

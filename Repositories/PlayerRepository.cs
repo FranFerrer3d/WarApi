@@ -1,37 +1,45 @@
-﻿using System.Xml.Linq;
-using WarApi.Models;
+﻿using WarApi.Models;
 using WarApi.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace WarApi.Repositories
 {
-    public class PlayerRepository:IPlayerRepository
+    public class PlayerRepository : IPlayerRepository
     {
-        private static readonly List<Player> _jugadores = new();
+        private readonly AppDbContext _context;
 
-        public IEnumerable<Player> GetAll() => _jugadores;
-
-        public Player? GetById(Guid id) =>
-            _jugadores.FirstOrDefault(j => j.ID == id);
-
-        public void Add(Player jugador)
+        public PlayerRepository(AppDbContext context)
         {
-            jugador.ID = Guid.NewGuid();
-            _jugadores.Add(jugador);
+            _context = context;
         }
 
-        public void Update(Player jugador)
+        public IEnumerable<Player> GetAll() =>
+            _context.Players.ToList();
+
+        public Player? GetById(Guid id) =>
+            _context.Players.Find(id);
+
+        public void Add(Player player)
         {
-            var index = _jugadores.FindIndex(j => j.ID == jugador.ID);
-            if (index != -1)
-                _jugadores[index] = jugador;
+            player.ID = Guid.NewGuid();
+            _context.Players.Add(player);
+            _context.SaveChanges();
+        }
+
+        public void Update(Player player)
+        {
+            _context.Players.Update(player);
+            _context.SaveChanges();
         }
 
         public void Delete(Guid id)
         {
-            var jugador = GetById(id);
-            if (jugador != null)
-                _jugadores.Remove(jugador);
+            var player = _context.Players.Find(id);
+            if (player != null)
+            {
+                _context.Players.Remove(player);
+                _context.SaveChanges();
+            }
         }
-
     }
 }
