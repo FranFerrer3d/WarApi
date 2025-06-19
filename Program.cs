@@ -29,15 +29,13 @@ builder.Services.AddScoped<IPlayerService, PlayerService>();
 
 
 
-var rawUrl = builder.Configuration["ConnectionStrings:DefaultConnection"] ??
-             builder.Configuration["DATABASE_URL"];
+var rawUrl = builder.Configuration["DATABASE_URL"]
+             ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 var connectionString = ConvertDatabaseUrlToConnectionString(rawUrl);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
-
-
 
 
 
@@ -56,6 +54,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
@@ -66,12 +65,15 @@ app.Run();
 
 
 
-string ConvertDatabaseUrlToConnectionString(string databaseUrl)
+string ConvertDatabaseUrlToConnectionString(string? databaseUrl)
 {
-    // Ejemplo: postgres://user:pass@host:port/dbname
+    if (string.IsNullOrWhiteSpace(databaseUrl))
+        throw new ArgumentException("DATABASE_URL is not set");
+
     var uri = new Uri(databaseUrl);
     var userInfo = uri.UserInfo.Split(':');
 
     return $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};Ssl Mode=Require;Trust Server Certificate=true";
 }
+
 
