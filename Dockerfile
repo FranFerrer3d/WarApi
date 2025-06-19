@@ -1,15 +1,22 @@
-﻿# Etapa de build
-FROM mcr.microsoft.com/dotnet/sdk:9.0-preview AS build
+﻿# Etapa base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 
-# Copiar los archivos del proyecto
+# Etapa de construcción
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copiar archivos de proyecto y restaurar
 COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet restore
 
-# Etapa de runtime
-FROM mcr.microsoft.com/dotnet/aspnet:9.0-preview AS runtime
+# Publicar en modo Release
+RUN dotnet publish -c Release -o /app/publish
+
+# Etapa de runtime final (usando .NET 8)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=build /app/out .
+COPY --from=build /app/publish .
 
 # Comando de inicio
 ENTRYPOINT ["dotnet", "WarApi.dll"]
