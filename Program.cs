@@ -19,20 +19,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Inyección de dependencias
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddScoped<IMatchReportRepository, MatchReportRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IMatchReportService, MatchReportService>(); 
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                      ?? builder.Configuration.GetConnectionString("DATABASE_URL")
+                      ?? builder.Configuration["DATABASE_URL"]
+                      ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
-
-var rawUrl = builder.Configuration["ConnectionStrings:DefaultConnection"] ?? 
-             builder.Configuration["ConnectionStrings:DATABASE_URL"];
-
-var connectionString = rawUrl;
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException("Database connection string is not configured.");
+}
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
