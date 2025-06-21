@@ -13,6 +13,15 @@ namespace WarApi.Services
             _repository = repository;
         }
 
+        public bool Login(string email,string password){
+
+
+            List<Player> jugadores = _repository.GetAll().ToList();
+            if (jugadores.Where(x => x.Email == email && x.Contraseña == password).FirstOrDefault() != null) return true;
+
+            return false;
+        }
+
         public IEnumerable<Player> GetAll() => _repository.GetAll();
 
         public Player? GetById(Guid id) => _repository.GetById(id);

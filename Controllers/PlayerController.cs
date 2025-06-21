@@ -17,6 +17,13 @@ namespace WarApi.Controllers
 
         // GET /jugadores
         [HttpGet]
+        public ActionResult<bool> Login()
+        {
+            return Ok(_PlayerService.GetAll());
+        }
+
+        // GET /jugadores
+        [HttpGet]
         public ActionResult<IEnumerable<Player>> GetAll()
         {
             return Ok(_PlayerService.GetAll());
