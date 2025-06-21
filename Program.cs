@@ -2,6 +2,7 @@
 using MatchReportNamespace.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using WarApi.Models;
 using WarApi.Repositories;
@@ -28,6 +29,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
                       ?? builder.Configuration.GetConnectionString("DATABASE_URL")
                       ?? builder.Configuration["DATABASE_URL"]
                       ?? Environment.GetEnvironmentVariable("DATABASE_URL");
+
+connectionString = ConvertUrlIfNeeded(connectionString);
 
 if (string.IsNullOrWhiteSpace(connectionString))
 {
@@ -82,6 +85,34 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static string ConvertUrlIfNeeded(string? conn)
+{
+    if (string.IsNullOrWhiteSpace(conn))
+    {
+        return conn ?? string.Empty;
+    }
+
+    if (!conn.Contains("://"))
+    {
+        return conn;
+    }
+
+    var uri = new Uri(conn);
+    var userInfo = uri.UserInfo.Split(':', 2);
+    var builder = new NpgsqlConnectionStringBuilder
+    {
+        Host = uri.Host,
+        Port = uri.Port,
+        Username = userInfo.Length > 0 ? userInfo[0] : string.Empty,
+        Password = userInfo.Length > 1 ? userInfo[1] : string.Empty,
+        Database = uri.AbsolutePath.TrimStart('/'),
+        SslMode = SslMode.Require,
+        TrustServerCertificate = true
+    };
+
+    return builder.ToString();
+}
 
 
 
