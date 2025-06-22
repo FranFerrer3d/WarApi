@@ -9,5 +9,7 @@ namespace WarApi.Services.Interfaces
         Player Create(Player jugador);
         bool Update(Guid id, Player jugador);
         bool Delete(Guid id);
+
+        public string Login(string user, string pass);
     }
 }
