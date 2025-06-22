@@ -18,6 +18,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Configurar CORS para permitir cualquier origen, encabezado y método
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 // Inyección de dependencias
 builder.Services.AddScoped<IMatchReportRepository, MatchReportRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
@@ -76,6 +85,9 @@ catch (Exception ex)
 
 
 app.UseHttpsRedirection();
+
+// Habilitar la política de CORS definida anteriormente
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
