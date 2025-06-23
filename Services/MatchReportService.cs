@@ -28,6 +28,13 @@ namespace MatchReportNamespace.Services
             return report;
         }
 
+
+        public async Task<List<MatchReport>> GetReportsByUser(Guid id)
+        {
+            var allReports = await _repository.GetAllAsync();
+            return allReports.Where(x => x.PlayerAId == id || x.PlayerBId == id).ToList();
+        }
+
         public async Task UpdateAsync(Guid id, MatchReport updatedReport)
         {
             var existing = await _repository.GetByIdAsync(id);
