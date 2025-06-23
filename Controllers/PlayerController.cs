@@ -36,6 +36,14 @@ namespace WarApi.Controllers
             return jugador is null ? NotFound() : Ok(jugador);
         }
 
+        // GET /jugadores/{email}
+        [HttpGet("GetByEmail/{email:string}")]
+        public ActionResult<Player> GetByEmail(string email)
+        {
+            var jugador = _PlayerService.GetAll().Where(x=>x.Email == email).FirstOrDefault();
+            return jugador is null ? NotFound() : Ok(jugador);
+        }
+
         // POST /jugadores
         [HttpPost]
         public ActionResult<Player> Create(Player nuevoJugador)
