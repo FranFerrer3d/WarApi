@@ -31,6 +31,13 @@ namespace MatchReportNamespace.Controllers
             return report == null ? NotFound() : Ok(report);
         }
 
+        [HttpGet("{playerId}")]
+        public async Task<IActionResult> GetByPlayerId(Guid playerId)
+        {
+            var reports = await _service.GetReportsByUser(playerId);
+            return reports == null ? NotFound() : Ok(reports);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] MatchReportCreateDto dto)
         {
