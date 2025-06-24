@@ -37,7 +37,7 @@ namespace WarApi.Controllers
         }
 
         // GET /jugadores/{email}
-        [HttpGet("GetByEmail/{email:string}")]
+        [HttpGet("GetByEmail/{email}")]
         public ActionResult<Player> GetByEmail(string email)
         {
             var jugador = _PlayerService.GetAll().Where(x=>x.Email == email).FirstOrDefault();
