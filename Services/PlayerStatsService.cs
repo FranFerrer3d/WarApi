@@ -146,8 +146,7 @@ namespace WarApi.Services
 
             return stats.OrderBy(kv => CalculateWinRate(kv.Value.Wins, kv.Value.Games)).First().Key;
         }
-
-        private static void Accumulate(Dictionary<string, (int Wins, int Games)> dict, string key, bool win)
+private static void Accumulate(Dictionary<string, (int Wins, int Games)> dict, string key, bool win)
         {
             if (!dict.ContainsKey(key)) dict[key] = (0, 0);
             var val = dict[key];
@@ -205,5 +204,6 @@ namespace WarApi.Services
 
             return result;
         }
+
     }
 }
