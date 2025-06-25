@@ -34,5 +34,8 @@ namespace WarApi.Dtos
         public string PrimaryResult { get; set; } = "None"; // Puede ser PlayerA, PlayerB, Both, None
         public bool SecondaryWinA { get; set; }
         public bool SecondaryWinB { get; set; }
+
+        public int FinalScoreA { get; set; }
+        public int FinalScoreB { get; set; }
     }
 }
