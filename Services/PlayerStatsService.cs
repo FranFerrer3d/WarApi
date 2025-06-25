@@ -177,7 +177,8 @@ private static void Accumulate(Dictionary<string, (int Wins, int Games)> dict, s
                 Accumulate(secondaries, sec, win);
             }
 
-            int limit = Math.Clamp(top, 1, 12);
+            // Allow 0 to return empty lists while still capping the result size
+            int limit = Math.Clamp(top, 0, 12);
 
             PlayerIdealScenarioDto result = new()
             {
