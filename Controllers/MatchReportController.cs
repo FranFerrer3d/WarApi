@@ -31,7 +31,7 @@ namespace MatchReportNamespace.Controllers
             return report == null ? NotFound() : Ok(report);
         }
 
-        [HttpGet("{playerId}")]
+        [HttpGet("GetByPlayerId")]
         public async Task<IActionResult> GetByPlayerId(Guid playerId)
         {
             var reports = await _service.GetReportsByUser(playerId);
