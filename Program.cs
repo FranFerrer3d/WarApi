@@ -33,6 +33,8 @@ builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IMatchReportService, MatchReportService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IPlayerStatsService, PlayerStatsService>();
+builder.Services.AddScoped<IArmyListRepository, ArmyListRepository>();
+builder.Services.AddScoped<IArmyListService, ArmyListService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                       ?? builder.Configuration.GetConnectionString("DATABASE_URL")

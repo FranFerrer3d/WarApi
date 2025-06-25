@@ -12,6 +12,8 @@ namespace WarApi.Dtos
 
         public string ListA { get; set; } = string.Empty;
         public string ListB { get; set; } = string.Empty;
+        public string ArmyA { get; set; } = string.Empty;
+        public string ArmyB { get; set; } = string.Empty;
 
         public int ExpectedA { get; set; }
         public int ExpectedB { get; set; }
