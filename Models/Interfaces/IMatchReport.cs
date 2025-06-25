@@ -26,6 +26,8 @@ namespace MatchReportNamespace
         Player PlayerB { get; set; }
         string ListA { get; set; }
         string ListB { get; set; }
+        string ArmyA { get; set; }
+        string ArmyB { get; set; }
         int ExpectedA { get; set; }
         int ExpectedB { get; set; }
 

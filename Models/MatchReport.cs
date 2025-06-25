@@ -19,6 +19,8 @@ namespace MatchReportNamespace
 
         public string ListA { get; set; }
         public string ListB { get; set; }
+        public string ArmyA { get; set; } = string.Empty;
+        public string ArmyB { get; set; } = string.Empty;
         public int ExpectedA { get; set; }
         public int ExpectedB { get; set; }
 
@@ -52,6 +54,8 @@ namespace MatchReportNamespace
         {
             ListA = "";
             ListB = "";
+            ArmyA = "";
+            ArmyB = "";
             MagicA = new int[6];
             MagicB = new int[6];
             Date = DateTime.Now;

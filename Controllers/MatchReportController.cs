@@ -4,6 +4,7 @@ using MatchReportNamespace.Services;
 using Microsoft.AspNetCore.Mvc;
 using WarApi.Dtos;
 using WarApi.Services.Interfaces;
+using WarApi.Models;
 
 namespace MatchReportNamespace.Controllers
 {
@@ -13,11 +14,13 @@ namespace MatchReportNamespace.Controllers
     {
         private readonly IMatchReportService _service;
         private readonly IPlayerService _Playerservice;
+        private readonly IArmyListService _listService;
 
-        public MatchReportsController(IMatchReportService service,IPlayerService PlayerService)
+        public MatchReportsController(IMatchReportService service, IPlayerService PlayerService, IArmyListService listService)
         {
             _service = service;
             _Playerservice = PlayerService;
+            _listService = listService;
         }
 
         [HttpGet]
@@ -47,6 +50,30 @@ namespace MatchReportNamespace.Controllers
             if (playerA == null || playerB == null)
                 return BadRequest("One or both players not found");
 
+            string ExtractFaction(string list)
+            {
+                if (string.IsNullOrWhiteSpace(list)) return string.Empty;
+                var lines = list.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+                return lines.Length > 0 ? lines[0].Trim() : string.Empty;
+            }
+
+            var factionA = string.IsNullOrWhiteSpace(dto.ArmyA) ? ExtractFaction(dto.ListA) : dto.ArmyA;
+            var factionB = string.IsNullOrWhiteSpace(dto.ArmyB) ? ExtractFaction(dto.ListB) : dto.ArmyB;
+
+            await _listService.CreateAsync(new ArmyList
+            {
+                PlayerId = dto.PlayerAId,
+                Faction = factionA,
+                Content = dto.ListA
+            });
+
+            await _listService.CreateAsync(new ArmyList
+            {
+                PlayerId = dto.PlayerBId,
+                Faction = factionB,
+                Content = dto.ListB
+            });
+
             var report = new MatchReport
             {
                 Id = Guid.NewGuid(),
@@ -56,6 +83,8 @@ namespace MatchReportNamespace.Controllers
                 PlayerB = playerB,
                 ListA = dto.ListA,
                 ListB = dto.ListB,
+                ArmyA = factionA,
+                ArmyB = factionB,
                 ExpectedA = dto.ExpectedA,
                 ExpectedB = dto.ExpectedB,
                 Date = dto.Date,

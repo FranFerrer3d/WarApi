@@ -9,6 +9,7 @@ namespace WarApi.Models
 
         public DbSet<MatchReport> MatchReports { get; set; }
         public DbSet<Player> Players { get; set; }
+        public DbSet<ArmyList> ArmyLists { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
