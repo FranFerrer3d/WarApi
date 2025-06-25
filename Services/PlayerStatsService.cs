@@ -1,6 +1,7 @@
 using MatchReportNamespace;
 using MatchReportNamespace.Services;
 using WarApi.Services.Interfaces;
+using WarApi.Dtos;
 
 namespace WarApi.Services
 {
@@ -146,5 +147,65 @@ namespace WarApi.Services
 
             return stats.OrderBy(kv => CalculateWinRate(kv.Value.Wins, kv.Value.Games)).First().Key;
         }
+private static void Accumulate(Dictionary<string, (int Wins, int Games)> dict, string key, bool win)
+        {
+            if (!dict.ContainsKey(key)) dict[key] = (0, 0);
+            var val = dict[key];
+            if (win) val.Wins++;
+            val.Games++;
+            dict[key] = val;
+        }
+
+        public async Task<PlayerIdealScenarioDto> GetIdealScenario(Guid playerId, int top)
+        {
+            var reports = await GetReports(playerId);
+
+            var opponents = new Dictionary<string, (int Wins, int Games)>();
+            var maps = new Dictionary<string, (int Wins, int Games)>();
+            var primaries = new Dictionary<string, (int Wins, int Games)>();
+            var secondaries = new Dictionary<string, (int Wins, int Games)>();
+
+            foreach (var r in reports)
+            {
+                bool win = DidPlayerWin(r, playerId);
+                var opp = r.PlayerAId == playerId ? r.ListB : r.ListA;
+                var sec = r.PlayerAId == playerId ? r.SecondaryA : r.SecondaryB;
+
+                Accumulate(opponents, opp, win);
+                Accumulate(maps, r.Map, win);
+                Accumulate(primaries, r.PrimaryMission, win);
+                Accumulate(secondaries, sec, win);
+            }
+
+            // Allow 0 to return empty lists while still capping the result size
+            int limit = Math.Clamp(top, 0, 12);
+
+            PlayerIdealScenarioDto result = new()
+            {
+                OpponentFactions = opponents
+                    .OrderByDescending(kv => CalculateWinRate(kv.Value.Wins, kv.Value.Games))
+                    .Take(limit)
+                    .Select(kv => kv.Key)
+                    .ToList(),
+                Maps = maps
+                    .OrderByDescending(kv => CalculateWinRate(kv.Value.Wins, kv.Value.Games))
+                    .Take(limit)
+                    .Select(kv => kv.Key)
+                    .ToList(),
+                PrimaryMissions = primaries
+                    .OrderByDescending(kv => CalculateWinRate(kv.Value.Wins, kv.Value.Games))
+                    .Take(limit)
+                    .Select(kv => kv.Key)
+                    .ToList(),
+                SecondaryMissions = secondaries
+                    .OrderByDescending(kv => CalculateWinRate(kv.Value.Wins, kv.Value.Games))
+                    .Take(limit)
+                    .Select(kv => kv.Key)
+                    .ToList()
+            };
+
+            return result;
+        }
+
     }
 }

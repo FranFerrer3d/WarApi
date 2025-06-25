@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using WarApi.Services.Interfaces;
 
+using WarApi.Dtos;
+
+
 namespace WarApi.Controllers
 {
     [ApiController]
@@ -57,5 +60,10 @@ namespace WarApi.Controllers
         [HttpGet("{playerId}/worst-opponent")]
         public async Task<ActionResult<string?>> GetWorstOpponent(Guid playerId)
             => Ok(await _statsService.GetWorstOpponentFaction(playerId));
+
+        [HttpGet("{playerId}/ideal-scenario/{top?}")]
+        public async Task<ActionResult<PlayerIdealScenarioDto>> GetIdealScenario(Guid playerId, int top = 1)
+            => Ok(await _statsService.GetIdealScenario(playerId, top));
+
     }
 }
