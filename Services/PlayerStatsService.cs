@@ -1,6 +1,7 @@
 using MatchReportNamespace;
 using MatchReportNamespace.Services;
 using WarApi.Services.Interfaces;
+using WarApi.Dtos;
 
 namespace WarApi.Services
 {
