@@ -61,46 +61,5 @@ namespace MatchReportNamespace
             Date = DateTime.Now;
         }
 
-        public void CalculateFinalScore()
-        {
-            int pointDiff = KillsA - KillsB;
-            double percentage = (double)Math.Abs(pointDiff) / 4000.0;
-
-            // Scale to 0–16
-            int basePoints = (int)Math.Round(percentage * 16);
-            if (basePoints > 16) basePoints = 16;
-
-            int pointsA = pointDiff > 0 ? basePoints : 16 - basePoints;
-            int pointsB = 16 - pointsA;
-
-            // Add mission bonuses
-            if (PrimaryResult == PrimaryWinner.PlayerA) pointsA += 3;
-            else if (PrimaryResult == PrimaryWinner.PlayerB) pointsB += 3;
-            else if (PrimaryResult == PrimaryWinner.Both)
-            {
-                pointsA += 3;
-                pointsB += 3;
-            }
-
-            if (SecondaryWinA) pointsA += 1;
-            if (SecondaryWinB) pointsB += 1;
-
-            // Clamp to 0–20
-            pointsA = Math.Clamp(pointsA, 0, 20);
-            pointsB = Math.Clamp(pointsB, 0, 20);
-
-            // Ensure total is 20
-            if (pointsA + pointsB > 20)
-            {
-                int excess = (pointsA + pointsB) - 20;
-                if (pointsA > pointsB)
-                    pointsA -= excess;
-                else
-                    pointsB -= excess;
-            }
-            this.FinalScoreA = pointsA;
-            this.FinalScoreB = pointsB;
-
-        }
     }
 }

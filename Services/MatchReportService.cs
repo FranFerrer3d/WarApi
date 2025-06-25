@@ -23,7 +23,6 @@ namespace MatchReportNamespace.Services
         public async Task<MatchReport> CreateAsync(MatchReport report)
         {
             report.Id = Guid.NewGuid();
-            report.CalculateFinalScore();
             await _repository.AddAsync(report);
             return report;
         }
@@ -41,7 +40,6 @@ namespace MatchReportNamespace.Services
             if (existing == null) return;
 
             updatedReport.Id = id;
-            updatedReport.CalculateFinalScore();
             await _repository.UpdateAsync(updatedReport);
         }
 

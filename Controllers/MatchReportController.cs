@@ -99,10 +99,10 @@ namespace MatchReportNamespace.Controllers
                 KillsB = dto.KillsB,
                 PrimaryResult = Enum.TryParse<PrimaryWinner>(dto.PrimaryResult, out var result) ? result : PrimaryWinner.None,
                 SecondaryWinA = dto.SecondaryWinA,
-                SecondaryWinB = dto.SecondaryWinB
+                SecondaryWinB = dto.SecondaryWinB,
+                FinalScoreA = dto.FinalScoreA,
+                FinalScoreB = dto.FinalScoreB
             };
-
-            report.CalculateFinalScore();
 
             await _service.CreateAsync(report);
 
