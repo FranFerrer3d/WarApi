@@ -11,8 +11,11 @@ using WarApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Agregar controladores
-builder.Services.AddControllers();
+// Agregar controladores con manejo para referencias cíclicas
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 
 // Agregar Swagger
 builder.Services.AddEndpointsApiExplorer();
