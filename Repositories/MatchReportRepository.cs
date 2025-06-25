@@ -14,12 +14,18 @@ namespace MatchReportNamespace.Repositories
 
         public async Task<IEnumerable<MatchReport>> GetAllAsync()
         {
-            return await _context.MatchReports.ToListAsync();
+            return await _context.MatchReports
+                                 .Include(m => m.PlayerA)
+                                 .Include(m => m.PlayerB)
+                                 .ToListAsync();
         }
 
         public async Task<MatchReport?> GetByIdAsync(Guid id)
         {
-            return await _context.MatchReports.FindAsync(id);
+            return await _context.MatchReports
+                                 .Include(m => m.PlayerA)
+                                 .Include(m => m.PlayerB)
+                                 .FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task AddAsync(MatchReport report)
