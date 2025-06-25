@@ -1,4 +1,6 @@
 using MatchReportNamespace;
+using WarApi.Dtos;
+
 
 namespace WarApi.Services.Interfaces
 {
@@ -15,5 +17,6 @@ namespace WarApi.Services.Interfaces
         Task<double> GetWinRateByPrimary(Guid playerId, string primary);
         Task<string?> GetBestOpponentFaction(Guid playerId);
         Task<string?> GetWorstOpponentFaction(Guid playerId);
+        Task<PlayerIdealScenarioDto> GetIdealScenario(Guid playerId, int top);
     }
 }
