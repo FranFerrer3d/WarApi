@@ -52,11 +52,11 @@ namespace WarApi.Controllers
             return CreatedAtAction(nameof(GetById), new { id = creado.ID }, creado);
         }
 
-        // PUT /jugadores/{id}
-        [HttpPut("{id:guid}")]
-        public IActionResult Update(Guid id, Player jugador)
+        // PUT
+        [HttpPut]
+        public IActionResult Update(Player jugador)
         {
-            if (!_PlayerService.Update(id, jugador))
+            if (!_PlayerService.Update(jugador.ID, jugador))
                 return NotFound();
 
             return NoContent();
