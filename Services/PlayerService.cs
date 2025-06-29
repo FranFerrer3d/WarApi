@@ -13,9 +13,9 @@ namespace WarApi.Services
             _repository = repository;
         }
 
-        public bool Login(string email, string password)
+        public Player? Login(string email, string password)
         {
-            return _repository.GetAll(true).Any(player => player.Email == email && player.Contraseña == password);
+            return _repository.GetAll(true).Where(player => player.Email == email && player.Contraseña == password).SingleOrDefault();
         }
 
 

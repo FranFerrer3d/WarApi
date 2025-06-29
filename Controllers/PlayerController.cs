@@ -16,7 +16,7 @@ namespace WarApi.Controllers
         }
 
         [HttpPost("Login")]
-        public ActionResult<string> Login(string user,string pass)
+        public ActionResult<Player?> Login(string user,string pass)
         {
             return Ok(_PlayerService.Login(user,pass));
         }
