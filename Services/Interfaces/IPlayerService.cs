@@ -10,6 +10,6 @@ namespace WarApi.Services.Interfaces
         bool Update(Guid id, Player jugador);
         bool Delete(Guid id);
 
-        public string Login(string user, string pass);
+        bool Login(string email, string password);
     }
 }

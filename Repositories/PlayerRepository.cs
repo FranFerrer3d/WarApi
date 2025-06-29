@@ -1,6 +1,7 @@
 ﻿using WarApi.Models;
 using WarApi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace WarApi.Repositories
 {
@@ -13,8 +14,16 @@ namespace WarApi.Repositories
             _context = context;
         }
 
-        public IEnumerable<Player> GetAll() =>
-            _context.Players.ToList();
+        public IEnumerable<Player> GetAll(bool forcePassword = false){
+            var res = _context.Players.ToList();
+            if (!forcePassword) {
+                foreach (var player in res)
+                {
+                    player.Contraseña = null;
+                }
+            }
+            return res;
+        }
 
         public Player? GetById(Guid id) =>
             _context.Players.Find(id);

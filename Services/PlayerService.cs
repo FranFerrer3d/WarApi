@@ -13,14 +13,11 @@ namespace WarApi.Services
             _repository = repository;
         }
 
-        public string Login(string email,string password){
-
-
-            List<Player> jugadores = _repository.GetAll().ToList();
-            if (jugadores.Where(x => x.Email == email && x.Contraseña == password).FirstOrDefault() != null) return "true";
-
-            return "false";
+        public bool Login(string email, string password)
+        {
+            return _repository.GetAll(true).Any(player => player.Email == email && player.Contraseña == password);
         }
+
 
         public IEnumerable<Player> GetAll() => _repository.GetAll();
 
@@ -34,10 +31,6 @@ namespace WarApi.Services
 
         public bool Update(Guid id, Player jugador)
         {
-            var existente = _repository.GetById(id);
-            if (existente == null) return false;
-
-            jugador.ID = id;
             _repository.Update(jugador);
             return true;
         }
