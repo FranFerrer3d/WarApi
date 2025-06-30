@@ -8,6 +8,10 @@ using WarApi.Repositories;
 using WarApi.Repositories.Interfaces;
 using WarApi.Services;
 using WarApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using WarApi.Services.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +42,9 @@ builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IPlayerStatsService, PlayerStatsService>();
 builder.Services.AddScoped<IArmyListRepository, ArmyListRepository>();
 builder.Services.AddScoped<IArmyListService, ArmyListService>();
+builder.Services.AddSingleton<IEncryptionService, Base64EncryptionService>();
+builder.Services.AddSingleton<ITokenService, JwtTokenService>();
+builder.Services.AddSingleton<Microsoft.AspNetCore.Identity.PasswordHasher<WarApi.Models.Player>>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                       ?? builder.Configuration.GetConnectionString("DATABASE_URL")
@@ -51,6 +58,19 @@ if (string.IsNullOrWhiteSpace(connectionString))
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
+
+var keyBytes = Encoding.ASCII.GetBytes(builder.Configuration["JWT_SECRET"] ?? "dev-secret-key");
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+        };
+    });
 
 
 
@@ -94,6 +114,8 @@ app.UseHttpsRedirection();
 
 // Habilitar la política de CORS definida anteriormente
 app.UseCors("AllowAll");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
