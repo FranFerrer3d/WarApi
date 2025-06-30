@@ -131,7 +131,9 @@ try
     }
 
     var hasher = scope.ServiceProvider.GetRequiredService<PasswordHasher<Player>>();
-    var playersToUpdate = db.Players.Where(p => !p.Contraseña.StartsWith("AQAAAA", StringComparison.Ordinal)).ToList();
+    var playersToUpdate = db.Players
+        .Where(p => !EF.Functions.Like(p.Contraseña, "AQAAAA%"))
+        .ToList();
     if (playersToUpdate.Any())
     {
         Console.WriteLine($"⚠️  Found {playersToUpdate.Count} unhashed password(s). Hashing...");
