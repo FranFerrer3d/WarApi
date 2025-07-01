@@ -70,6 +70,7 @@ builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IPlayerStatsService, PlayerStatsService>();
 builder.Services.AddScoped<IArmyListRepository, ArmyListRepository>();
 builder.Services.AddScoped<IArmyListService, ArmyListService>();
+builder.Services.AddScoped<ITeamStatsService, TeamStatsService>();
 builder.Services.AddSingleton<IEncryptionService, Base64EncryptionService>();
 builder.Services.AddSingleton<ITokenService, JwtTokenService>();
 builder.Services.AddSingleton<Microsoft.AspNetCore.Identity.PasswordHasher<WarApi.Models.Player>>();

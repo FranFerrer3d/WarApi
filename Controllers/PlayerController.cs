@@ -9,6 +9,7 @@ namespace WarApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class PlayerController : ControllerBase
     {
         private readonly IPlayerService _PlayerService;
@@ -21,6 +22,7 @@ namespace WarApi.Controllers
         }
 
         [HttpPost("Login")]
+        [AllowAnonymous]
         public ActionResult<LoginResponseDto> Login(string user, string pass)
         {
             var player = _PlayerService.Login(user, pass);

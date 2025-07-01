@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using WarApi.Services.Interfaces;
 
 using WarApi.Dtos;
@@ -8,6 +9,7 @@ namespace WarApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PlayerStatsController : ControllerBase
     {
         private readonly IPlayerStatsService _statsService;
