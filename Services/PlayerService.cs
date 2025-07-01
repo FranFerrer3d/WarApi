@@ -23,13 +23,23 @@ namespace WarApi.Services
 
         private Player Decode(Player player, bool includePassword)
         {
-            player.Nombre = _encryption.Decrypt(player.Nombre);
-            player.Apellidos = _encryption.Decrypt(player.Apellidos);
-            player.Alias = _encryption.Decrypt(player.Alias);
-            player.Equipo = _encryption.Decrypt(player.Equipo);
-            if (!includePassword)
-                player.Contraseña = null;
-            return player;
+            try
+            {
+                player.Nombre = _encryption.Decrypt(player.Nombre);
+                player.Apellidos = _encryption.Decrypt(player.Apellidos);
+                player.Alias = _encryption.Decrypt(player.Alias);
+                player.Equipo = _encryption.Decrypt(player.Equipo);
+                if (!includePassword)
+                    player.Contraseña = null;
+                return player;
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                if (!includePassword)
+                    player.Contraseña = null;
+                return player;
+            }
+            
         }
 
         public Player? Login(string email, string password)
