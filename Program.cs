@@ -130,22 +130,6 @@ try
         Console.WriteLine("ℹ️  No pending migrations. Database is up to date.");
     }
 
-    var hasher = scope.ServiceProvider.GetRequiredService<PasswordHasher<Player>>();
-    var playersToUpdate = db.Players.Where(p => !p.Contraseña.StartsWith("AQAAAA", StringComparison.Ordinal)).ToList();
-    if (playersToUpdate.Any())
-    {
-        Console.WriteLine($"⚠️  Found {playersToUpdate.Count} unhashed password(s). Hashing...");
-        foreach (var p in playersToUpdate)
-        {
-            p.Contraseña = hasher.HashPassword(p, p.Contraseña);
-        }
-        db.SaveChanges();
-        Console.WriteLine("✅ Passwords hashed successfully.");
-    }
-    else
-    {
-        Console.WriteLine("ℹ️  All passwords already hashed.");
-    }
 }
 catch (Exception ex)
 {

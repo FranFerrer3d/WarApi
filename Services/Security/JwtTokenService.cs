@@ -18,7 +18,8 @@ namespace WarApi.Services.Security
         public string CreateToken(Player player)
         {
             var handler = new JwtSecurityTokenHandler();
-            var keyBytes = Encoding.ASCII.GetBytes(_config["JWT_SECRET"] ?? "dev-secret-key");
+            var keyBytes = Encoding.ASCII.GetBytes(_config["JWT_SECRET"]);
+
             var descriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
