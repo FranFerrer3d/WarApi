@@ -10,10 +10,20 @@ namespace WarApi.Models
         public DbSet<MatchReport> MatchReports { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<ArmyList> ArmyLists { get; set; }
+        public DbSet<Team> Teams { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Team>()
+                .HasKey(t => t.Name);
+
+            modelBuilder.Entity<Player>()
+                .HasOne(p => p.Team)
+                .WithMany(t => t.Players)
+                .HasForeignKey(p => p.Equipo)
+                .HasPrincipalKey(t => t.Name);
+
             modelBuilder.Entity<MatchReport>()
                 .HasOne(m => m.PlayerA)
                 .WithMany()

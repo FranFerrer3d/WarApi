@@ -7,6 +7,7 @@ namespace MatchReportNamespace.Services
     {
         Task<IEnumerable<MatchReport>> GetAllAsync();
         Task<List<MatchReport>> GetReportsByUser(Guid id);
+        Task<List<MatchReport>> GetReportsByTeam(string teamName);
         Task<MatchReport?> GetByIdAsync(Guid id);
         Task<MatchReport> CreateAsync(MatchReport report);
         Task UpdateAsync(Guid id, MatchReport report);

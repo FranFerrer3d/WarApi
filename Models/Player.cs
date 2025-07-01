@@ -13,6 +13,8 @@ namespace WarApi.Models
         public string Contraseña { get; set; } = string.Empty;
         public string? Foto { get; set; }
         public string Equipo { get; set; } = string.Empty;
+
+        public Team? Team { get; set; }
         public Enums.UserRole Rol { get; set; } = Enums.UserRole.User;
 
         // Relaciones futuras

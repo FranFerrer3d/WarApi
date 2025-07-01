@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MatchReportNamespace.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using WarApi.Dtos;
 using WarApi.Services.Interfaces;
 using WarApi.Models;
@@ -10,6 +11,7 @@ namespace MatchReportNamespace.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class MatchReportsController : ControllerBase
     {
         private readonly IMatchReportService _service;

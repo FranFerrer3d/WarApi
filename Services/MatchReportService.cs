@@ -54,6 +54,14 @@ namespace MatchReportNamespace.Services
             return allReports.Where(x => x.PlayerAId == id || x.PlayerBId == id).ToList();
         }
 
+        public async Task<List<MatchReport>> GetReportsByTeam(string teamName)
+        {
+            var players = _players.GetAll().Where(p => p.Equipo == teamName).Select(p => p.ID).ToHashSet();
+            var allReports = (await _repository.GetAllAsync()).ToList();
+            foreach (var r in allReports) DecodePlayers(r);
+            return allReports.Where(r => players.Contains(r.PlayerAId) || players.Contains(r.PlayerBId)).ToList();
+        }
+
         public async Task UpdateAsync(Guid id, MatchReport updatedReport)
         {
             var existing = await _repository.GetByIdAsync(id);
