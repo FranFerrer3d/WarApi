@@ -81,8 +81,6 @@ namespace MatchReportNamespace.Controllers
                 Id = Guid.NewGuid(),
                 PlayerAId = dto.PlayerAId,
                 PlayerBId = dto.PlayerBId,
-                PlayerA = playerA,
-                PlayerB = playerB,
                 ListA = dto.ListA,
                 ListB = dto.ListB,
                 ArmyA = factionA,
@@ -107,6 +105,9 @@ namespace MatchReportNamespace.Controllers
             };
 
             await _service.CreateAsync(report);
+
+            report.PlayerA = playerA;
+            report.PlayerB = playerB;
 
             return CreatedAtAction(nameof(GetById), new { id = report.Id }, report);
         }
