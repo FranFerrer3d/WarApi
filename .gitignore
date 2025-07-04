@@ -41,14 +41,6 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 
-# MSTest test Results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
-
-# NUnit
-*.VisualState.xml
-TestResult.xml
-nunit-*.xml
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
@@ -98,8 +90,6 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
-# Chutzpah Test files
-_Chutzpah*
 
 # Visual C++ cache files
 ipch/
@@ -156,9 +146,6 @@ _NCrunch_*
 .*crunch*.local.xml
 nCrunchTemp_*
 
-# MightyMoose
-*.mm.*
-AutoTest.Net/
 
 # Web workbench (sass)
 .sass-cache/
