@@ -34,14 +34,6 @@ export JWT_SECRET="your-secret-key"
    dotnet run --project WarApi.csproj
    ```
 
-## Running tests
-
-Execute the unit tests with:
-
-```bash
-dotnet test
-```
-
 ## Docker
 
 Build the Docker image using the provided `Dockerfile`:
