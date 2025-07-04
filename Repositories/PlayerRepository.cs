@@ -14,8 +14,11 @@ namespace WarApi.Repositories
             _context = context;
         }
 
-        public IEnumerable<Player> GetAll(bool forcePassword = false){
-            var res = _context.Players.ToList();
+        public IEnumerable<Player> GetAll(bool forcePassword = false)
+        {
+            var res = _context.Players
+                .AsNoTracking()
+                .ToList();
             if (!forcePassword) {
                 foreach (var player in res)
                 {
@@ -26,7 +29,9 @@ namespace WarApi.Repositories
         }
 
         public Player? GetById(Guid id) =>
-            _context.Players.Find(id);
+            _context.Players
+                .AsNoTracking()
+                .FirstOrDefault(p => p.ID == id);
 
         public void Add(Player player)
         {
