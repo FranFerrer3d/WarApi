@@ -23,6 +23,7 @@ namespace MatchReportNamespace.Repositories
         public async Task<MatchReport?> GetByIdAsync(Guid id)
         {
             return await _context.MatchReports
+                                 .AsNoTracking()
                                  .Include(m => m.PlayerA)
                                  .Include(m => m.PlayerB)
                                  .FirstOrDefaultAsync(m => m.Id == id);
